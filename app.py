@@ -8,18 +8,23 @@ import json
 app = Flask(__name__)
 
 def carregar_planilha():
-    scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+    scope = [
+        "https://spreadsheets.google.com/feeds",
+        "https://www.googleapis.com/auth/drive"
+    ]
     
-    # Pegando a credencial JSON da variável de ambiente (string JSON)
     cred_json = os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON")
     if not cred_json:
-        raise Exception("Variável de ambiente GOOGLE_SERVICE_ACCOUNT_JSON não definida")
+        raise Exception("Erro: variável de ambiente GOOGLE_SERVICE_ACCOUNT_JSON não está definida")
     
-    creds_dict = json.loads(cred_json)
+    try:
+        creds_dict = json.loads(cred_json)
+    except json.JSONDecodeError:
+        raise Exception("Erro ao decodificar o JSON da variável GOOGLE_SERVICE_ACCOUNT_JSON")
+    
     creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
     client = gspread.authorize(creds)
 
-    # Usando open_by_key com o ID da planilha
     planilha_id = "11VY8Yd7Jne2Ciq7bM-fLAuysAP82Scv7RkcyRFLELWY"
     planilha = client.open_by_key(planilha_id).worksheet("Sleep_health_and_lifestyle_dataset")
     
