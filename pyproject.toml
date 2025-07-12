@@ -52,5 +52,8 @@ dependencies = [
     "wheel",
     "zope.interface",
     "gunicorn",
-    "flask"
+    "flask",
+    "gspread",
+    "oauth2client",
+    "pandas"
 ]
