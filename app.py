@@ -4,6 +4,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 import pandas as pd
 import os
 import json
+import base64  # <-- Importante: importar a biblioteca base64
 
 app = Flask(__name__)
 
@@ -13,16 +14,23 @@ def carregar_planilha():
         "https://www.googleapis.com/auth/drive"
     ]
     
-    cred_json = os.getenv("GOOGLE_SERVICE_ACCOUNT_JSON")
-    if not cred_json:
-        raise Exception("Erro: variável de ambiente GOOGLE_SERVICE_ACCOUNT_JSON não está definida")
+    # 1. Obter a variável de ambiente codificada em Base64
+    cred_base64 = os.getenv("GOOGLE_CREDENTIALS_BASE64")
+    if not cred_base64:
+        raise Exception("Erro: variável de ambiente GOOGLE_CREDENTIALS_BASE64 não está definida")
     
     try:
-        creds_dict = json.loads(cred_json)
-        creds_dict["private_key"] = creds_dict["private_key"].replace("\\n", "\n")
-    except json.JSONDecodeError:
-        raise Exception("Erro ao decodificar o JSON da variável GOOGLE_SERVICE_ACCOUNT_JSON")
+        # 2. Decodificar a string Base64 de volta para uma string JSON
+        cred_json_string = base64.b64decode(cred_base64).decode('utf-8')
+        
+        # 3. Converter a string JSON em um dicionário Python
+        creds_dict = json.loads(cred_json_string)
+        
+    except Exception as e:
+        # Captura qualquer erro no processo de decodificação
+        raise Exception(f"Erro ao decodificar as credenciais a partir da variável de ambiente: {e}")
     
+    # 4. Usar o dicionário de credenciais para autorizar
     creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
     client = gspread.authorize(creds)
 
