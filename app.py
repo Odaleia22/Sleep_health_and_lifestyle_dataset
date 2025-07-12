@@ -4,7 +4,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 import pandas as pd
 import os
 import json
-import base64  # <-- Importante: importar a biblioteca base64
+import base64  
 
 app = Flask(__name__)
 
