@@ -19,6 +19,7 @@ def carregar_planilha():
     
     try:
         creds_dict = json.loads(cred_json)
+        creds_dict["private_key"] = creds_dict["private_key"].replace("\\n", "\n")
     except json.JSONDecodeError:
         raise Exception("Erro ao decodificar o JSON da variável GOOGLE_SERVICE_ACCOUNT_JSON")
     
