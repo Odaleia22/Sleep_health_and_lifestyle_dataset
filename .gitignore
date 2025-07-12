@@ -1,0 +1,9 @@
+# Ignorar ambiente virtual (caso não esteja fora da pasta do projeto)
+.venv/
+
+# Ignorar credenciais
+/home/odaleia_gomes/projects/qualidade_do_sono/Sleep_health_and_lifestyle_dataset/credenciais
+
+# Ignorar cache e outros
+__pycache__/
+*.pyc
